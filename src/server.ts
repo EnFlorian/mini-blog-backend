@@ -1,14 +1,13 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { createServer } from "http";
 import dotenv from "dotenv";
-import * as usersController from "./controllers/users";
-
+import postsRoutes from "./routes/posts";
+import commentsRoutes from "./routes/comments";
+import usersRoutes from "./routes/users";
 dotenv.config();
-
 import mongoose from "mongoose";
 import morgan from "morgan";
 import cors from "cors";
-import { Role } from "./types/role.enum";
 
 // Server setup
 const app = express();
@@ -28,8 +27,12 @@ mongoose.set("toJSON", {
   },
 });
 
-app.post("/api/users", usersController.registerUser);
+// Routes
+app.use("/posts", postsRoutes);
+app.use("/comments", commentsRoutes);
+app.use("/users", usersRoutes);
 
+// Start server
 const PORT = process.env.PORT || 5001;
 
 mongoose
@@ -43,5 +46,3 @@ mongoose
   .catch((err) => {
     console.log("Error connecting to MongoDB: ", err);
   });
-
-console.log(Role.USER === "USER");
